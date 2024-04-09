@@ -5,8 +5,25 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 
+const num = Math.floor(Math.random() * 4) + 1;
+
+for (let i = 1; i <= 4; i++) {
+    if (i === num){
+        app.get(`/abracadabra/conejo/${num}`, (req, res) =>{
+            res.sendFile(__dirname + '/public/assets/img/conejito.jpg');
+        })
+    } else {
+        app.get(`/abracadabra/conejo/${i}`, (req, res) =>{
+            res.sendFile(__dirname + '/public/assets/img/voldemort.jpg');
+        })
+    }
+}
+
+app.get('/', (req, res) =>{
+    res.send('Hola mundo')
+})
+
 app.use(express.static('public'));
-console.log(__dirname)
 
 let lista = {usuarios : [
     'juan',
@@ -23,19 +40,18 @@ const verificarUsuario = (req, res, next) => {
     const valido = lista.usuarios.find( nombre => nombre === usuario)
 
     if (valido) {
-        next()
+        return next()
     } else {
         res.sendFile(__dirname + '/public/assets/img/who.jpeg');
     }
 }
+
 
 app.get('/abracadabra/juego/:usuario', verificarUsuario, (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
     
 })
 
-app.get('/abracadabra', (req, res)=>{
-})
 
 app.get('/*', (req, res)=>{
     res.send('Esta página no existe')
